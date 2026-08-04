@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Anniversary!</title>
+  
+  <style>
+    /* Global Styling */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      background-color: #fffaf0;
+      color: #5a4035;
+      text-align: center;
+      padding: 40px 15px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #e07a5f;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    p.subtitle {
+      color: #8d8177;
+      margin-bottom: 30px;
+    }
+
+    /* --- PASSWORD OVERLAY (ด่านล็อกรหัสผ่านหน้าแรก) --- */
+    #pass-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #fffaf0;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: opacity 0.6s ease, visibility 0.6s;
+    }
+
+    .pass-card {
+      background: #ffffff;
+      padding: 30px 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      max-width: 320px;
+      width: 100%;
+    }
+
+    .pass-card h2 {
+      color: #e07a5f;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .pass-card p {
+      color: #8d8177;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
+
+    .pass-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #f5cac3;
+      border-radius: 12px;
+      font-size: 1rem;
+      text-align: center;
+      outline: none;
+      color: #5a4035;
+      margin-bottom: 15px;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+    }
+
+    .pass-input:focus {
+      border-color: #e07a5f;
+    }
+
+    .btn-pass {
+      width: 100%;
+      background-color: #e07a5f;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 0.95rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .btn-pass:hover {
+      background-color: #d0694e;
+    }
+
+    #pass-error {
+      color: #d90429;
+      font-size: 0.8rem;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* --- JIGSAW OVERLAY --- */
+    #jigsaw-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #fffaf0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+
+    .jigsaw-title {
+      color: #e07a5f;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .jigsaw-board {
+      width: 360px;
+      height: 360px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 3px;
+      background: #e07a5f;
+      padding: 4px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    .jigsaw-piece {
+      width: 100%;
+      height: 100%;
+      background-size: 360px 360px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: transform 0.2s, border 0.2s;
+    }
+
+    .jigsaw-piece.selected {
+      border: 3px solid #ffb703;
+      transform: scale(0.95);
+    }
+
+    /* --- PHOTO COLLAGE NUMBER 2 STYLING --- */
+    .collage-section {
+      background: #ffffff;
+      padding: 25px 15px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      margin-bottom: 40px;
+    }
+
+    .collage-title {
+      color: #e07a5f;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .number-2-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      max-width: 340px;
+      margin: 0 auto;
+      padding: 10px;
+      background: #fffaf5;
+      border-radius: 15px;
+      border: 2px dashed #f5cac3;
+    }
+
+    .collage-img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .collage-img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 5px 12px rgba(224, 122, 95, 0.4);
+      z-index: 10;
+    }
+
+    /* POPUP PHOTO MODAL */
+    .photo-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 5000;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .photo-modal-content {
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 15px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+      object-fit: contain;
+    }
+
+    .photo-modal-close {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      color: #ffffff;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      background: rgba(255,255,255,0.2);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Section 1: Live Counter Styling */
+    .counter-card {
+      background: #ffffff;
+      padding: 25px 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      margin-bottom: 50px;
+    }
+
+    .timer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .time-box {
+      background: #fdf0ed;
+      padding: 15px 5px;
+      border-radius: 12px;
+    }
+
+    .time-box span {
+      display: block;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #e07a5f;
+    }
+
+    .time-box label {
+      font-size: 0.85rem;
+      color: #8d8177;
+    }
+
+    /* Section 2: Interactive Envelope Styling */
+    .envelope-section {
+      margin-top: 40px;
+    }
+
+    .envelope {
+      width: 200px;
+      height: 140px;
+      background: #e07a5f;
+      margin: 0 auto 20px auto;
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 8px 20px rgba(224, 122, 95, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .envelope:hover {
+      transform: scale(1.05);
+    }
+
+    .envelope-heart {
+      font-size: 2.5rem;
+      color: #ffffff;
+    }
+
+    .btn-open {
+      background-color: #e07a5f;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(224, 122, 95, 0.2);
+      transition: background 0.3s;
+    }
+
+    .btn-open:hover {
+      background-color: #d0694e;
+    }
+
+    /* Modal / Popup Letter */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .letter-card {
+      background: #ffffff;
+      padding: 25px 20px;
+      border-radius: 20px;
+      max-width: 450px;
+      width: 100%;
+      text-align: left;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+      position: relative;
+      animation: popUp 0.3s ease-out;
+    }
+
+    @keyframes popUp {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .letter-card h3 {
+      color: #e07a5f;
+      margin-bottom: 10px;
+      font-size: 1.4rem;
+    }
+
+    /* --- SCRATCH TO REVEAL CONTAINER --- */
+    .scratch-container {
+      position: relative;
+      width: 100%;
+      min-height: 200px;
+      margin-bottom: 15px;
+      touch-action: none;
+    }
+
+    .scratch-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      line-height: 1.6;
+      color: #5a4035;
+      font-size: 0.95rem;
+      z-index: 1;
+      padding: 10px;
+    }
+
+    #scratch-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      border-radius: 10px;
+      cursor: pointer;
+      touch-action: none;
+      transition: opacity 0.6s ease;
+    }
+
+    .close-btn {
+      display: block;
+      margin: 15px auto 0 auto;
+      background: #fdf0ed;
+      color: #e07a5f;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 18px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Animation หัวใจพุ่ง */
+    .heart-particle {
+      position: fixed;
+      font-size: 1.5rem;
+      user-select: none;
+      pointer-events: none;
+      z-index: 2000;
+      animation: floatUp 2.5s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.8);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.3) rotate(20deg);
+        opacity: 0;
+      }
+    }
+
+    #youtube-player {
+      display: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 400px) {
+      h1 { font-size: 1.8rem; }
+      .jigsaw-board { width: 300px; height: 300px; }
+      .jigsaw-piece { background-size: 300px 300px !important; }
+      .number-2-grid { max-width: 290px; gap: 4px; }
+      .time-box span { font-size: 1.4rem; }
+      .time-box label { font-size: 0.75rem; }
+      .envelope { width: 170px; height: 120px; }
+      .close-btn { font-size: 0.85rem; padding: 8px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔒 Password Overlay (ด่านแรกสุด) -->
+  <div id="pass-overlay">
+    <div class="pass-card">
+      <h2>🔒 ปลดล็อกพื้นที่ความลับ</h2>
+      <p>ใส่รหัสผ่านลับของเราเพื่อเข้าสู่เว็บนะจ๊ะ 💕</p>
+      <input type="password" id="passInput" class="pass-input" placeholder="กรอกรหัสผ่านที่นี่..." onkeydown="if(event.key==='Enter') checkPassword()">
+      <button class="btn-pass" onclick="checkPassword()">เข้าสู่หน้าเว็บ</button>
+      <div id="pass-error">รหัสผ่านไม่ถูกต้องน้า ลองใหม่อีกทีจ้า 🐷</div>
+    </div>
+  </div>
+
+  <!-- 🧩 Jigsaw Overlay หน้าแรก -->
+  <div id="jigsaw-overlay">
+    <div class="jigsaw-title" id="jigsaw-status">🧩 ต่อภาพให้ถูกน้าา!</div>
+    <p style="color: #8d8177; font-size: 0.85rem; margin-bottom: 15px;">(คลิกเลือกชิ้นส่วน 2 ชิ้นเพื่อสลับตำแหน่ง)</p>
+    <div class="jigsaw-board" id="jigsaw-board"></div>
+  </div>
+
+  <div id="youtube-player"></div>
+
+  <!-- POPUP รูปใหญ่ -->
+  <div class="photo-modal" id="photoModal" onclick="closePhotoModal()">
+    <span class="photo-modal-close">&times;</span>
+    <img class="photo-modal-content" id="modalImg">
+  </div>
+
+  <div class="container">
+    <!-- Header -->
+    <h1>Happy 2nd Anniversary ❤️</h1>
+    <p class="subtitle">ขอบคุณสำหรับทุกช่วงเวลาดีๆ ที่มีให้กันตลอด 2 ปีนะ</p>
+
+    <!-- Photo Collage Number 2 Section -->
+    <div class="collage-section">
+      <div class="collage-title">📸 2 Years Memories (จิ้มดูรูปใหญ่ได้น้า)</div>
+      
+      <!-- เรียงรูปเป็นโครงสร้างเลข 2 (5 คอลัมน์ x 7 แถว = 22 รูป) -->
+      <div class="number-2-grid">
+        <!-- แถวที่ 1 (บนสุด) -->
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1DHjaBMBNalhhVUkJ7Sh_G8ZBYuaOCR8_" onclick="openPhotoModal(this.src)">
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1XGy_Rshuhaqk63787YkQY9SfUiQz_nML" onclick="openPhotoModal(this.src)">
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1nGn8onvYIxT_gPXvaQtoTrP-ksWtDdpg" onclick="openPhotoModal(this.src)">
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1lFtdcKJqvtzcuSsQI4ugdzHyV2BY2kt9" onclick="openPhotoModal(this.src)">
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1Z31wy7lQg36_0kaGtPn1LdXDLmETJrmW" onclick="openPhotoModal(this.src)">
+
+        <!-- แถวที่ 2 (โค้งขวา) -->
+        <div style="grid-column: span 4;"></div>
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1AXyLjybjmWxQKnPQGgrgv2347qmXdT90" onclick="openPhotoModal(this.src)">
+
+        <!-- แถวที่ 3 (โค้งลงมา) -->
+        <div style="grid-column: span 4;"></div>
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/11LEdsCnDSpKbEuRgLwvb2gxK0h09WQMu" onclick="openPhotoModal(this.src)">
+
+        <!-- แถวที่ 4 (เฉียงลงซ้าย) -->
+        <div style="grid-column: span 2;"></div>
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1SAkhP4V6ZKcxCDohc7IdylzT00_g1Ud7" onclick="openPhotoModal(this.src)">
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1oCaqQSvVEzkqevfR9dk04dCaXbGpZT5l" onclick="openPhotoModal(this.src)">
+        <div style="grid-column: span 1;"></div>
+
+        <!-- แถวที่ 5 (ลงล่างซ้าย) -->
+        <div style="grid-column: span 1;"></div>
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1a5lhXJ3RtHR1qyhAgpnI-CL1XV9ShdJ0" onclick="openPhotoModal(this.src)">
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1_9wI8Wl1dbODfZXXdo83Dokcwhf2rOSj" onclick="openPhotoModal(this.src)">
+        <div style="grid-column: span 2;"></div>
+
+        <!-- แถวที่ 6 (ล่างสุดซ้าย) -->
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1e3fZvaUdU3D-uYc2GsEaKO9V1LcE2wjy" onclick="openPhotoModal(this.src)">
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1IIwidNXQZCDp1FU-krIo29JSLIHUVI2m" onclick="openPhotoModal(this.src)">
+        <div style="grid-column: span 3;"></div>
+
+        <!-- แถวที่ 7 (ฐานล่างยาว) -->
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1xkf33yjAhd-qlLnKFkTXmXMexE94Jp7-" onclick="openPhotoModal(this.src)">
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1GdUla5pD6idhUOZrDNsoornx2UlFMyh4" onclick="openPhotoModal(this.src)">
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1ThhYnf06rZZ5XnnB1wbby3by4rvE5jgW" onclick="openPhotoModal(this.src)">
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1hjpmzXZar9L5rEJuANG8CxlaTAOEEkrH" onclick="openPhotoModal(this.src)">
+        <img class="collage-img" src="https://lh3.googleusercontent.com/d/1GhAtxv4aoqMvi_j1SoMTj7P-c1yRXBMS" onclick="openPhotoModal(this.src)">
+      </div>
+    </div>
+
+    <!-- 1. Live Counter Section -->
+    <div class="counter-card">
+      <p style="font-weight: 600; color: #8d8177;">เราคบกันมาแล้ว</p>
+      <div class="timer-grid">
+        <div class="time-box">
+          <span id="days">0</span>
+          <label>วัน</label>
+        </div>
+        <div class="time-box">
+          <span id="hours">0</span>
+          <label>ชั่วโมง</label>
+        </div>
+        <div class="time-box">
+          <span id="minutes">0</span>
+          <label>นาที</label>
+        </div>
+        <div class="time-box">
+          <span id="seconds">0</span>
+          <label>วินาที</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Interactive Envelope Section -->
+    <div class="envelope-section">
+      <p style="margin-bottom: 15px; color: #8d8177;">💕💕</p>
+      <div class="envelope" onclick="openLetter()">
+        <div class="envelope-heart">💌</div>
+      </div>
+      <button class="btn-open" onclick="openLetter()">เปิดอ่านจดหมาย</button>
+    </div>
+  </div>
+
+  <!-- Modal จดหมายความในใจ -->
+  <div class="modal-overlay" id="letterModal">
+    <div class="letter-card">
+      <h3>ถึงตัวเล็ก 💌</h3>
+      <p style="font-size: 0.8rem; color: #e07a5f; margin-bottom: 10px;">✨ (ใช้นิ้ว/เม้าส์ ขูดแผ่นสีทองด้านล่างได้เลยน้า)</p>
+      
+      <div class="scratch-container" id="scratchContainer">
+        <div class="scratch-text">
+          <p>สุขสันต์วันครบรอบนะครับ!</p>
+          <p>ขอบคุณที่คอยอยู่ข้างๆ กันและไปกินหมูกระทะ ชาบูด้วยกัน 55555</p>
+          <p>พี่อาจจะพูดไม่ค่อยเก่ง หรือเขียนอะไรยาวๆ ไม่ค่อยเป็น แต่รักหนูนะค้าบบ อยากไปเที่ยวกันอีกหลายๆที่เลยน้าา อยู่ด้วยกันแบบนี้ไปทุกๆ ปีเลย ❤️</p>
+        </div>
+        <canvas id="scratch-canvas"></canvas>
+      </div>
+      
+      <button class="close-btn" onclick="closeLetter()">ปิดจดหมาย</button>
+    </div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <script>
+    const YOUTUBE_VIDEO_ID = 'vQiEM9IwKKs'; 
+    const IMG_SRC = 'https://lh3.googleusercontent.com/d/1YUR2BLAlck3iRZaNHsBGT3sL_f4BIln9';
+
+    // -------------------------------------------------------------
+    // 🔒 PASSWORD CHECK SYSTEM
+    // -------------------------------------------------------------
+    function checkPassword() {
+      const input = document.getElementById('passInput').value.trim();
+      const passOverlay = document.getElementById('pass-overlay');
+      const errorMsg = document.getElementById('pass-error');
+
+      if (input.toLowerCase() === 'sai0508tum') {
+        passOverlay.style.opacity = '0';
+        setTimeout(() => {
+          passOverlay.style.visibility = 'hidden';
+          initJigsaw(); // เริ่มเล่น Jigsaw ต่อทันที
+        }, 600);
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 📸 PHOTO POPUP MODAL SYSTEM
+    // -------------------------------------------------------------
+    function openPhotoModal(src) {
+      const modal = document.getElementById('photoModal');
+      const modalImg = document.getElementById('modalImg');
+      modal.style.display = 'flex';
+      modalImg.src = src;
+    }
+
+    function closePhotoModal() {
+      document.getElementById('photoModal').style.display = 'none';
+    }
+
+    // -------------------------------------------------------------
+    // 🧩 1. JIGSAW PUZZLE SYSTEM
+    // -------------------------------------------------------------
+    const jigsawBoard = document.getElementById('jigsaw-board');
+    const jigsawOverlay = document.getElementById('jigsaw-overlay');
+    const jigsawStatus = document.getElementById('jigsaw-status');
+    let pieces = [];
+    let currentOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    let selectedPiece = null;
+
+    function initJigsaw() {
+      jigsawBoard.innerHTML = '';
+      pieces = [];
+      
+      const boardWidth = jigsawBoard.offsetWidth || 360;
+      const pieceSize = boardWidth / 3;
+
+      for (let i = 0; i < 9; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'jigsaw-piece';
+        piece.style.backgroundImage = `url('${IMG_SRC}')`;
+        
+        const row = Math.floor(i / 3);
+        const col = i % 3;
+        piece.style.backgroundPosition = `-${col * pieceSize}px -${row * pieceSize}px`;
+        piece.dataset.correctIndex = i;
+        pieces.push(piece);
+      }
+
+      pieces.forEach(p => jigsawBoard.appendChild(p));
+      
+      setTimeout(() => {
+        jigsawStatus.innerText = "🧩 สลับชิ้นส่วนแล้ว! ลองต่อดูนะ";
+        shuffleJigsaw();
+      }, 2000);
+    }
+
+    function shuffleJigsaw() {
+      currentOrder.sort(() => Math.random() - 0.5);
+      renderBoard();
+    }
+
+    function renderBoard() {
+      jigsawBoard.innerHTML = '';
+      currentOrder.forEach((pos, index) => {
+        const piece = pieces[pos];
+        piece.onclick = () => onPieceClick(index);
+        jigsawBoard.appendChild(piece);
+      });
+    }
+
+    function onPieceClick(index) {
+      if (selectedPiece === null) {
+        selectedPiece = index;
+        jigsawBoard.children[index].classList.add('selected');
+      } else {
+        let temp = currentOrder[selectedPiece];
+        currentOrder[selectedPiece] = currentOrder[index];
+        currentOrder[index] = temp;
+
+        selectedPiece = null;
+        renderBoard();
+        checkJigsawWin();
+      }
+    }
+
+    function checkJigsawWin() {
+      const isWin = currentOrder.every((val, index) => val === index);
+      if (isWin) {
+        jigsawStatus.innerText = "🎉 เก่งมากเลยตัวเล็ก! เข้าสู่หน้าเว็บ...";
+        createHearts();
+        setTimeout(() => {
+          jigsawOverlay.style.opacity = '0';
+          jigsawOverlay.style.visibility = 'hidden';
+        }, 1200);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 🎵 2. YOUTUBE API & TIMER
+    // -------------------------------------------------------------
+    let player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('youtube-player', {
+        height: '0',
+        width: '0',
+        videoId: YOUTUBE_VIDEO_ID,
+        playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': YOUTUBE_VIDEO_ID }
+      });
+    }
+
+    const startDate = new Date(2024, 8, 5, 0, 0, 0);
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = now - startDate;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / 1000 / 60) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById('days').innerText = days;
+      document.getElementById('hours').innerText = hours;
+      document.getElementById('minutes').innerText = minutes;
+      document.getElementById('seconds').innerText = seconds;
+    }
+
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    // -------------------------------------------------------------
+    // 💖 3. FLOATING HEARTS & SCRATCH CARD
+    // -------------------------------------------------------------
+    function createHearts() {
+      const hearts = ['❤️', '💖', '🐷', '💕', '🐱', '🐈',"🌴","🌊"];
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.className = 'heart-particle';
+          heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+          heart.style.left = Math.random() * 100 + 'vw';
+          heart.style.bottom = '-20px';
+          document.body.appendChild(heart);
+
+          setTimeout(() => heart.remove(), 2500);
+        }, i * 80);
+      }
+    }
+
+    let isScratchInited = false;
+    let isAutoRevealed = false;
+
+    function initScratchCard() {
+      const canvas = document.getElementById('scratch-canvas');
+      const container = document.getElementById('scratchContainer');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = container.offsetWidth;
+      canvas.height = container.offsetHeight;
+
+      ctx.fillStyle = '#e0a96d';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '16px Segoe UI';
+      ctx.textAlign = 'center';
+      ctx.fillText('✨ ใช้นิ้วขูดตรงนี้เลย ✨', canvas.width / 2, canvas.height / 2);
+
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: clientX - rect.left,
+          y: clientY - rect.top
+        };
+      }
+
+      function startScratch(e) {
+        if (isAutoRevealed) return;
+        isDrawing = true;
+        const pos = getPos(e);
+        lastX = pos.x;
+        lastY = pos.y;
+      }
+
+      function scratch(e) {
+        if (!isDrawing || isAutoRevealed) return;
+        e.preventDefault();
+        
+        const pos = getPos(e);
+
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = 36;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+
+        lastX = pos.x;
+        lastY = pos.y;
+
+        checkScratchPercentage();
+      }
+
+      function stopScratch() {
+        isDrawing = false;
+      }
+
+      function checkScratchPercentage() {
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = imgData.data;
+        let transparentPixels = 0;
+
+        for (let i = 0; i < pixels.length; i += 4) {
+          if (pixels[i + 3] === 0) transparentPixels++;
+        }
+
+        const percentage = (transparentPixels / (pixels.length / 4)) * 100;
+        
+        if (percentage > 65 && !isAutoRevealed) {
+          isAutoRevealed = true;
+          canvas.style.opacity = '0';
+          setTimeout(() => {
+            canvas.style.display = 'none';
+          }, 600);
+        }
+      }
+
+      canvas.addEventListener('mousedown', startScratch);
+      canvas.addEventListener('mousemove', scratch);
+      canvas.addEventListener('mouseup', stopScratch);
+      canvas.addEventListener('mouseleave', stopScratch);
+
+      canvas.addEventListener('touchstart', startScratch, { passive: false });
+      canvas.addEventListener('touchmove', scratch, { passive: false });
+      canvas.addEventListener('touchend', stopScratch);
+    }
+
+    function openLetter() {
+      document.getElementById('letterModal').style.display = 'flex';
+      createHearts();
+      
+      if (!isScratchInited) {
+        setTimeout(initScratchCard, 100);
+        isScratchInited = true;
+      }
+
+      if (player && typeof player.playVideo === 'function') {
+        player.playVideo();
+      }
+    }
+
+    function closeLetter() {
+      document.getElementById('letterModal').style.display = 'none';
+      if (player && typeof player.pauseVideo === 'function') {
+        player.pauseVideo();
+      }
+    }
+  </script>
+</body>
+</html>
